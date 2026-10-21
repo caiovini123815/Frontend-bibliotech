@@ -6,7 +6,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("@/pages/IndexPage.vue") },
-      { path: "second", component: () => import("@/pages/SecondPage.vue") }
+      {
+        path: "dashboard",
+        component: () => import("@/pages/DashboardPage.vue")
+      },
+      { path: "books", component: () => import("@/pages/BookPage.vue") },
+      { path: "rents", component: () => import("@/pages/RentPage.vue") },
+      {
+        path: "publishers",
+        component: () => import("@/pages/PublisherPage.vue")
+      },
+      { path: "users", component: () => import("@/pages/UserPage.vue") },
+      { path: "settings", component: () => import("@/pages/SettingPage.vue") }
     ]
   },
   {
@@ -16,6 +27,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/forgotpassword",
     component: () => import("@/pages/ForgotpasswordPage.vue")
+  },
+  {
+    path: "/profile",
+    component: () => import("@/pages/ProfilePage.vue")
   },
   {
     path: "/register",

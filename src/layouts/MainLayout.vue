@@ -1,35 +1,93 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn
           flat
           dense
           round
-          icon="menu"
+          icon="bi-list"
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> BIBLIOTECH </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <!-- Menu do Usuário no Canto Superior Direito -->
+        <q-btn flat round icon="account_circle" size="md">
+          <q-menu auto-close class="q-pa-xs">
+            <q-list style="min-width: 200px">
+              <!-- Informações básicas do usuário -->
+              <q-item class="q-pb-sm">
+                <q-item-section avatar>
+                  <q-avatar
+                    color="primary"
+                    text-color="white"
+                    icon="bi-person-circle"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label class="text-bold">Usuário</q-item-label>
+                  <q-item-label caption>usuario@gmail.com</q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-separator />
+
+              <!-- Link para o Perfil -->
+              <q-item clickable to="/profile">
+                <q-item-section avatar>
+                  <q-icon name="bi-person-circle" />
+                </q-item-section>
+                <q-item-section>Meu Perfil</q-item-section>
+              </q-item>
+
+              <q-separator />
+
+              <!-- Botão de Sair -->
+              <q-item clickable to="/login" class="text-negative">
+                <q-item-section avatar>
+                  <q-icon name="bi-box-arrow-right" color="negative" />
+                </q-item-section>
+                <q-item-section>Sair</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <!-- Menu Lateral (Drawer) -->
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      style="background-color: #420f0f"
+    >
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
+        <q-item-label header class="text-grey-8"></q-item-label>
 
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.label"
-          v-bind="link"
-        />
+        <!-- Mapeamento dos links para as páginas -->
+        <q-item
+          v-for="link in navLinks"
+          :key="link.title"
+          clickable
+          v-ripple
+          :to="link.to"
+          exact
+        >
+          <q-item-section avatar>
+            <q-icon :name="link.icon" color="white" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="text-white">{{ link.title }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <!-- ÁREA ONDE AS PÁGINAS APARECEM -->
+    <q-page-container style="background-color: #c89f7a">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -37,58 +95,33 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import EssentialLink, {
-  type EssentialLinkProps
-} from "@/components/EssentialLink.vue";
 
-const linksList: EssentialLinkProps[] = [
-  {
-    label: "Docs",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "https://quasar.dev"
-  },
-  {
-    label: "GitHub",
-    caption: "github.com/quasarframework",
-    icon: "code",
-    link: "https://github.com/quasarframework"
-  },
-  {
-    label: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev"
-  },
-  {
-    label: "Forum",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev"
-  },
-  {
-    label: "Twitter",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev"
-  },
-  {
-    label: "Facebook",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev"
-  },
-  {
-    label: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev"
-  }
-];
+// Interface para tipar os links no TypeScript
+interface NavLink {
+  title: string;
+  icon: string;
+  to: string;
+}
 
 const leftDrawerOpen = ref(false);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+const navLinks: NavLink[] = [
+  { title: "Início", icon: "bi-house-fill", to: "/" },
+  { title: "Dashboard", icon: "bi-grid-1x2-fill", to: "/dashboard" },
+  { title: "Livros", icon: "bi-book-half", to: "/books" },
+  { title: "Empréstimos", icon: "bi-cash-stack", to: "/rents" },
+  { title: "Editoras", icon: "bi-collection-fill", to: "/publishers" },
+  { title: "Usuários", icon: "bi-people-fill", to: "/users" },
+  { title: "Configurações", icon: "bi-gear-fill", to: "/settings" }
+];
 </script>
+
+<style lang="scss" scoped>
+.icon {
+  color: $icon-color;
+}
+</style>

@@ -54,7 +54,9 @@
 
         <q-card-section>
           <div class="text-center">
-            <a href="#" class="link-register"> Registrar-se </a>
+            <a href="#" class="link-register" @click.prevent="enterregister">
+              Cadastrar-se
+            </a>
             <a
               href="#"
               class="link-forgotpassword"
@@ -141,6 +143,9 @@ const router = useRouter();
 function enterforgotpassword() {
   router.push("/forgotpassword");
 }
+function enterregister() {
+  router.push("/register");
+}
 </script>
 
 <style scoped>
@@ -164,7 +169,7 @@ function enterforgotpassword() {
 
   width: 450px;
   padding: 15px;
-  background: rgb(66, 15, 15);
+  background: #420f0f;
   border-radius: 15px;
   box-shadow: 0 40px 50px black;
 }
@@ -174,7 +179,7 @@ function enterforgotpassword() {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
 .login-input {
-  background-color: rgb(107, 48, 44);
+  background-color: #6b302c;
   color: rgb(252, 249, 249);
 }
 .label-inputs {
