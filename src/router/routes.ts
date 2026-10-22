@@ -16,6 +16,7 @@ const routes: RouteRecordRaw[] = [
         path: "publishers",
         component: () => import("@/pages/PublisherPage.vue")
       },
+      { path: "profile", component: () => import("@/pages/ProfilePage.vue") },
       { path: "users", component: () => import("@/pages/UserPage.vue") },
       { path: "settings", component: () => import("@/pages/SettingPage.vue") }
     ]
@@ -27,10 +28,6 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/forgotpassword",
     component: () => import("@/pages/ForgotpasswordPage.vue")
-  },
-  {
-    path: "/profile",
-    component: () => import("@/pages/ProfilePage.vue")
   },
   {
     path: "/register",
