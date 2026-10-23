@@ -5,10 +5,8 @@
     </div>
     <q-separator class="q-mb-xl bg-white opacity-3" style="height: 1px" />
 
-    <!-- Card de Configurações -->
     <q-card class="settings-card q-pa-xl shadow-3">
       <div class="column q-gutter-y-lg">
-        <!-- Opção: Alterar Tema -->
         <div class="row items-center justify-between">
           <div
             class="row items-center q-gutter-x-sm text-white text-subtitle1 text-weight-medium"
@@ -18,20 +16,27 @@
           </div>
 
           <div class="row items-center q-gutter-x-md">
-            <q-radio v-model="tema" val="luz" label="Luz" dark color="white" />
+            <q-radio
+              v-model="tema"
+              val="luz"
+              label="Luz"
+              dark
+              color="white"
+              @update:model-value="alterarTema"
+            />
             <q-radio
               v-model="tema"
               val="escuro"
               label="Escuro"
               dark
               color="white"
+              @update:model-value="alterarTema"
             />
           </div>
         </div>
 
         <q-separator class="bg-white opacity-2" style="height: 1px" />
 
-        <!-- Opção: Alterar Idioma -->
         <div class="row items-center justify-between">
           <div
             class="row items-center q-gutter-x-sm text-white text-subtitle1 text-weight-medium"
@@ -71,10 +76,22 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 
-// Valores iniciais selecionados com base no layout
-const tema = ref("escuro");
+const $q = useQuasar();
+
+const tema = ref($q.dark.isActive ? "escuro" : "claro");
 const idioma = ref("portugues");
+
+function alterarTema(novoTema: string) {
+  tema.value = novoTema;
+
+  if (novoTema === "escuro") {
+    $q.dark.set(true);
+  } else {
+    $q.dark.set(false);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -94,5 +111,8 @@ const idioma = ref("portugues");
 :deep(.q-radio__label) {
   color: #ffffff;
   font-size: 0.95rem;
+}
+body.body--dark {
+  background-color: #121212 !important;
 }
 </style>

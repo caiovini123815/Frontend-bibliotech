@@ -24,6 +24,7 @@
                 label="Nome Completo :"
                 type="text"
                 class="input-full_name"
+                dark
               />
 
               <q-input
@@ -31,6 +32,7 @@
                 label="E-mail :"
                 type="email"
                 class="input-email"
+                dark
               />
 
               <q-input
@@ -38,6 +40,7 @@
                 label="Telefone :"
                 type="tel"
                 class="input-telephone"
+                dark
               />
 
               <q-input
@@ -45,6 +48,7 @@
                 label="Data de Nascimento :"
                 type="date"
                 class="input-date_birth"
+                dark
               />
 
               <q-input
@@ -53,6 +57,7 @@
                 type="text"
                 class="input-cpf"
                 mask="###.###.###-##"
+                dark
               />
 
               <q-input
@@ -60,6 +65,7 @@
                 label="Endereço :"
                 type="text"
                 class="input-adress"
+                dark
               />
 
               <q-card-section class="btns-register-cancel">

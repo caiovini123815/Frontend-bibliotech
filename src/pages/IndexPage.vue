@@ -32,7 +32,7 @@
   height: 270px;
 }
 .btn-explorer {
-  transform: translate(0, 70%);
+  transform: translate(0, 10%);
 }
 .text-2 {
   color: black;

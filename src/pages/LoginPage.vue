@@ -17,12 +17,16 @@
         </q-card-section>
 
         <q-card-section>
-          <q-form class="label-inputs" @submit.prevent="submitForm">
+          <q-form color: white
+            class="label-inputs"
+            @submit.prevent="submitForm"
+          >
             <q-input
               v-model="login.email"
               label="E-mail :"
               type="email"
               class="input-email"
+              dark
             >
             </q-input>
             <q-input
@@ -30,6 +34,7 @@
               label="Password :"
               type="password"
               class="input-password"
+              dark
             >
             </q-input>
             <q-card-section>
@@ -49,6 +54,7 @@
             v-model="rememberMe"
             label="Lembrar-se"
             class="checkbox-remember"
+            dark
           />
         </q-card-section>
 
@@ -75,8 +81,10 @@
 import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
+import { api } from "@/boot/axios";
 
 const $q = useQuasar();
+const router = useRouter();
 
 const rememberMe = ref(false);
 
@@ -84,26 +92,23 @@ const login = ref({
   email: "",
   password: ""
 });
-function enter() {
-  if (rememberMe.value) {
-    console.log("Permanecer conectado");
-  } else {
-    console.log("Não permanecer conectado");
-  }
-}
 
 onMounted(() => {
   console.log("Página de login carregada");
 });
 
-function submitForm() {
+async function submitForm() {
   if (!login.value.email.trim() || !login.value.password) {
     $q.notify({
       type: "negative",
       message: "Preencha todos os campos!",
       position: "top",
-      timeout: 3000
-    });
+      timeout: 3000})
+
+    console.log("Enviando para o backend:", {
+      email: login.value.email,
+      password: login.value.password
+  });
     return;
   }
 
@@ -117,32 +122,50 @@ function submitForm() {
     return;
   }
 
-  if (login.value.password.length < 8) {
+  if (login.value.password.length < 6) {
     $q.notify({
       type: "negative",
-      message: "A senha deve ter no mínimo 8 caracteres!",
+      message: "A senha deve ter no mínimo 6 caracteres!",
       position: "top",
       timeout: 3000
     });
     return;
   }
 
-  $q.notify({
-    type: "positive",
-    message: "Informações corretas!",
-    position: "top",
-    timeout: 3000
-  });
-  console.log("E-mail:", login.value.email);
+  try {
+    const response = await api.post("/auth/login", {
+      email: login.value.email,
+      password: login.value.password
+    });
 
-  enter();
+    const token = response.data.token;
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+
+    $q.notify({
+      type: "positive",
+      message: "Login realizado com sucesso!",
+      position: "top",
+      timeout: 3000
+    });
+
+    router.push("/index");
+  } catch (error: any) {
+    console.error("Erro no login:", error);
+    $q.notify({
+      type: "negative",
+      message: error.response?.data?.message || "E-mail ou senha inválidos!",
+      position: "top",
+      timeout: 3000
+    });
+  }
 }
-
-const router = useRouter();
 
 function enterforgotpassword() {
   router.push("/forgotpassword");
 }
+
 function enterregister() {
   router.push("/register");
 }

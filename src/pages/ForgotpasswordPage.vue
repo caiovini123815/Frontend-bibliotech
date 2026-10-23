@@ -23,6 +23,7 @@
               label="Nova Senha :"
               type="password"
               class="input-new_password"
+              dark
             >
             </q-input>
             <q-input
@@ -30,6 +31,7 @@
               label="Confirmar Senha :"
               type="password"
               class="input-confirm_password"
+              dark
             >
             </q-input>
             <q-card-section class="btns-confirm-cancel">
@@ -85,10 +87,10 @@ function submitForm() {
     return;
   }
 
-  if (forgotpassword.value.new_password.length < 8) {
+  if (forgotpassword.value.new_password.length < 6) {
     $q.notify({
       type: "negative",
-      message: "A nova senha deve ter no mínimo 8 caracteres!",
+      message: "A nova senha deve ter no mínimo 6 caracteres!",
       position: "top",
       timeout: 3000
     });

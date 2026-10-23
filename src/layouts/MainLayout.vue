@@ -13,11 +13,9 @@
 
         <q-toolbar-title> BIBLIOTECH </q-toolbar-title>
 
-        <!-- Menu do Usuário no Canto Superior Direito -->
         <q-btn flat round icon="account_circle" size="md">
           <q-menu auto-close class="q-pa-xs">
             <q-list style="min-width: 200px">
-              <!-- Informações básicas do usuário -->
               <q-item class="q-pb-sm">
                 <q-item-section avatar>
                   <q-avatar
@@ -34,7 +32,6 @@
 
               <q-separator />
 
-              <!-- Link para o Perfil -->
               <q-item clickable to="/profile">
                 <q-item-section avatar>
                   <q-icon name="bi-person-circle" />
@@ -44,7 +41,6 @@
 
               <q-separator />
 
-              <!-- Botão de Sair -->
               <q-item clickable to="/login" class="text-negative">
                 <q-item-section avatar>
                   <q-icon name="bi-box-arrow-right" color="negative" />
@@ -57,7 +53,6 @@
       </q-toolbar>
     </q-header>
 
-    <!-- Menu Lateral (Drawer) -->
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
@@ -67,7 +62,6 @@
       <q-list>
         <q-item-label header class="text-grey-8"></q-item-label>
 
-        <!-- Mapeamento dos links para as páginas -->
         <q-item
           v-for="link in navLinks"
           :key="link.title"
@@ -86,7 +80,6 @@
       </q-list>
     </q-drawer>
 
-    <!-- ÁREA ONDE AS PÁGINAS APARECEM -->
     <q-page-container style="background-color: #c89f7a">
       <router-view />
     </q-page-container>
@@ -96,7 +89,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-// Interface para tipar os links no TypeScript
 interface NavLink {
   title: string;
   icon: string;
@@ -110,7 +102,7 @@ function toggleLeftDrawer() {
 }
 
 const navLinks: NavLink[] = [
-  { title: "Início", icon: "bi-house-fill", to: "/" },
+  { title: "Início", icon: "bi-house-fill", to: "/index" },
   { title: "Dashboard", icon: "bi-grid-1x2-fill", to: "/dashboard" },
   { title: "Livros", icon: "bi-book-half", to: "/books" },
   { title: "Empréstimos", icon: "bi-cash-stack", to: "/rents" },

@@ -62,28 +62,27 @@
           <tr>
             <th class="text-left">Livro</th>
             <th class="text-left">Autor</th>
-            <th class="text-center">Alugado</th>
-            <th class="text-center">Estoque</th>
+            <th class="text-center">Lançamento</th>
+            <th class="text-center">Quantidade</th>
+            <th class="text-center">Editora</th>
             <th class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="text-weight-medium">Dom Casmurro</td>
-            <td>Machado de Assis</td>
-            <td class="text-center">18</td>
-            <td class="text-center">65</td>
+          <!-- Exibição dinâmica dos livros vindos do backend -->
+          <tr v-for="(livro, index) in livros" :key="index">
+            <td class="text-weight-medium">{{ livro.titulo }}</td>
+            <td>{{ livro.autor }}</td>
+            <td class="text-center">{{ livro.lancamento }}</td>
+            <td class="text-center">{{ livro.quantidade }}</td>
+            <td class="text-center">{{ livro.editora }}</td>
             <td class="text-center">
               <q-btn flat round icon="edit" color="amber-2" size="sm" />
             </td>
           </tr>
-          <tr>
-            <td class="text-weight-medium">O Alquimista</td>
-            <td>Paulo Coelho</td>
-            <td class="text-center">24</td>
-            <td class="text-center">80</td>
-            <td class="text-center">
-              <q-btn flat round icon="edit" color="amber-2" size="sm" />
+          <tr v-if="livros.length === 0">
+            <td colspan="6" class="text-center text-grey-4 q-py-md">
+              Nenhum livro cadastrado.
             </td>
           </tr>
         </tbody>
@@ -191,7 +190,6 @@
               text-color="dark"
               class="full-width text-weight-bold q-py-sm rounded-btn"
               unelevated
-              v-close-popup
             />
           </div>
         </q-form>
@@ -201,8 +199,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { api } from "@/boot/axios";
 
+const livros = ref<any[]>([]);
 const search = ref("");
 const isOpen = ref(false);
 
@@ -214,9 +214,37 @@ const form = reactive({
   editora: ""
 });
 
-function onSubmit() {
-  console.log("Livro salvo:", form);
+async function carregarLivros() {
+  try {
+    const response = await api.get("/books");
+
+    livros.value = response.data.content || response.data;
+  } catch (error) {
+    console.error("Erro ao carregar os livros:", error);
+  }
 }
+
+async function onSubmit() {
+  try {
+    await api.post("/books", form);
+    console.log("Livro cadastrado com sucesso!");
+
+    isOpen.value = false;
+    await carregarLivros();
+
+    form.titulo = "";
+    form.autor = "";
+    form.lancamento = "";
+    form.quantidade = "";
+    form.editora = "";
+  } catch (error) {
+    console.error("Erro ao salvar o livro:", error);
+  }
+}
+
+onMounted(() => {
+  carregarLivros();
+});
 </script>
 
 <style lang="scss" scoped>
