@@ -84,9 +84,11 @@ export default defineConfig(ctx => {
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
+    // Configuration for the development server
     devServer: {
       port: 9000,
       open: true,
+
       proxy: {
         "/api": {
           target: "http://localhost:8080",

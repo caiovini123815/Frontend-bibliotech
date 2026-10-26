@@ -7,7 +7,26 @@ declare module "@vue/runtime-core" {
   }
 }
 
-const api = axios.create({ baseURL: "/api" });
+const api = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
+
+api.interceptors.request.use(
+  config => {
+    const isLoginRequest = config.url?.includes("/login");
+    const token = localStorage.getItem("token");
+
+    if (token && !isLoginRequest) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  error => Promise.reject(error)
+);
 
 export default ({ app }: { app: any }) => {
   app.config.globalProperties.$axios = axios;

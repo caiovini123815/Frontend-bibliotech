@@ -17,10 +17,7 @@
         </q-card-section>
 
         <q-card-section>
-          <q-form color: white
-            class="label-inputs"
-            @submit.prevent="submitForm"
-          >
+          <q-form class="label-inputs" @submit.prevent="submitForm">
             <q-input
               v-model="login.email"
               label="E-mail :"
@@ -32,10 +29,17 @@
             <q-input
               v-model="login.password"
               label="Password :"
-              type="password"
+              :type="showPassword ? 'text' : 'password'"
               class="input-password"
               dark
             >
+              <template v-slot:append>
+                <q-icon
+                  :name="showPassword ? 'visibility' : 'visibility_off'"
+                  class="cursor-pointer"
+                  @click="showPassword = !showPassword"
+                />
+              </template>
             </q-input>
             <q-card-section>
               <q-btn
@@ -87,6 +91,7 @@ const $q = useQuasar();
 const router = useRouter();
 
 const rememberMe = ref(false);
+const showPassword = ref(false);
 
 const login = ref({
   email: "",
@@ -103,19 +108,17 @@ async function submitForm() {
       type: "negative",
       message: "Preencha todos os campos!",
       position: "top",
-      timeout: 3000})
-
-    console.log("Enviando para o backend:", {
-      email: login.value.email,
-      password: login.value.password
-  });
+      timeout: 3000
+    });
     return;
   }
 
-  if (!/^[^\s@]+@gmail\.com$/i.test(login.value.email.trim())) {
+  const email = login.value.email.trim().toLowerCase();
+
+  if (!/^[^\s@]+@gmail\.com$/i.test(email)) {
     $q.notify({
       type: "negative",
-      message: "O e-mail deve conter ao final @gmail.com!",
+      message: "O e-mail deve terminar com @gmail.com!",
       position: "top",
       timeout: 3000
     });
@@ -133,14 +136,55 @@ async function submitForm() {
   }
 
   try {
-    const response = await api.post("/auth/login", {
-      email: login.value.email,
+    // A rota do backend é POST /login
+    const response = await api.post("/login", {
+      email,
       password: login.value.password
     });
 
+    console.log("Resposta do login:", response.data);
+
     const token = response.data.token;
-    if (token) {
-      localStorage.setItem("token", token);
+
+    if (
+      typeof token !== "string" ||
+      !token.trim() ||
+      token === "token-jwt-super-secreto-123456" ||
+      token.split(".").length !== 3
+    ) {
+      console.error("O backend não retornou um JWT válido.", response.data);
+
+      $q.notify({
+        type: "negative",
+        message:
+          "O login não retornou um JWT válido. Verifique a resposta do backend.",
+        position: "top",
+        timeout: 4000
+      });
+      return;
+    }
+
+    // Salva o JWT real retornado pelo backend
+    localStorage.setItem("token", token);
+
+    console.log("JWT real salvo:", localStorage.getItem("token") === token);
+
+    await router.push("/index");
+
+    if (router.currentRoute.value.fullPath !== "/index") {
+      console.error(
+        "A navegação não chegou a /index:",
+        router.currentRoute.value.fullPath
+      );
+
+      $q.notify({
+        type: "warning",
+        message:
+          "Login realizado, mas a navegação foi redirecionada. Confira o Console.",
+        position: "top",
+        timeout: 4000
+      });
+      return;
     }
 
     $q.notify({
@@ -149,13 +193,16 @@ async function submitForm() {
       position: "top",
       timeout: 3000
     });
-
-    router.push("/index");
   } catch (error: any) {
-    console.error("Erro no login:", error);
+    console.error(
+      "Erro no login ou na navegação:",
+      error.response?.data || error
+    );
+
     $q.notify({
       type: "negative",
-      message: error.response?.data?.message || "E-mail ou senha inválidos!",
+      message:
+        error.response?.data?.message || "Não foi possível concluir o login.",
       position: "top",
       timeout: 3000
     });
@@ -184,12 +231,9 @@ function enterregister() {
 }
 .login-container {
   position: fixed;
-
   top: 50%;
   left: 50%;
-
   transform: translate(-50%, -50%);
-
   width: 450px;
   padding: 15px;
   background: #420f0f;

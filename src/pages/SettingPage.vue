@@ -80,7 +80,7 @@ import { useQuasar } from "quasar";
 
 const $q = useQuasar();
 
-const tema = ref($q.dark.isActive ? "escuro" : "claro");
+const tema = ref($q.dark.isActive ? "escuro" : "luz");
 const idioma = ref("portugues");
 
 function alterarTema(novoTema: string) {
